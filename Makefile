@@ -1,15 +1,24 @@
-CFLAGS=-O0 -g -fno-omit-frame-pointer
-LDFLAGS=-Wl,--wrap=malloc -Wl,--wrap=free
+CFLAGS=-O0 -g -fno-omit-frame-pointer -fpic
+LIBFLAGS=-shared -Wl,--version-script=mymalloc.version
 CC=gcc
 
-all: mymalloc.so
+SRCS=mymalloc.c mymark.c
+OBJS=${SRCS:.c=.o}
+LIBS=mymalloc.so
 
-mymalloc.so: mymalloc.o
-	$(CC) $< -shared -o $@
+.PHONY: all
+all: ${LIBS}
 
-mymalloc.o: mymalloc.c
-	$(CC) $< -c -fpic -o $@
+mymalloc.so: ${OBJS}
+	$(CC) $? ${LIBFLAGS} -o $@
 
+%.o: %.c
+	$(CC) $< -c ${CFLAGS} -o $@
 
+.PHONY: clean
+clean:
+	rm -f ${OBJS} ${LIBS}
+
+.PHONY: run
 run: mymalloc.so
 	LD_PRELOAD=./mymalloc.so xeyes
