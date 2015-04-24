@@ -8,12 +8,11 @@
 #include "mymalloc.h"
 #include "mymark.h"
 
-static alloc_t* alloc_head = NULL;
+static alloc_t* alloc_heads[NUM_OF_HASH_GROUP+1] = {NULL};
 
 uint32_t hash(uintptr_t ptr)
 {
-  uint32_t val = (((uint32_t)ptr) >> 8) & 0xffff;
-  return ((val >> 4) ^ val) & 0xff;
+  return ((uint32_t)ptr) % NUM_OF_HASH_GROUP;
 }
 
 alloc_t* mark(void* ptr, size_t size)
@@ -25,13 +24,13 @@ alloc_t* mark(void* ptr, size_t size)
   alloc->addr  = (uintptr_t) ptr;
   alloc->size  = size;
   alloc->stack = NULL;
-  alloc->next = alloc_head;
+  alloc->next = alloc_heads[h];
   if (alloc->next)
     alloc->next->prev = alloc;
   alloc->prev  = NULL;
 
-  alloc_head = alloc;
-  return alloc_head;
+  alloc_heads[h] = alloc;
+  return alloc_heads[h];
 }
 
 uint32_t free_mark(void* ptr)
@@ -48,23 +47,24 @@ uint32_t free_mark(void* ptr)
     size = alloc->size;
     if (!alloc->prev) {
       uint32_t h = hash((uintptr_t)ptr);
-      alloc_head = alloc->next;
-      if (alloc_head)
-        alloc_head->prev = NULL;
+      alloc_heads[h] = alloc->next;
+      if (alloc_heads[h])
+        alloc_heads[h]->prev = NULL;
     } else {
       alloc->prev->next = alloc->next;
-      alloc->next->prev = alloc->prev;
+      if (alloc->next)
+        alloc->next->prev = alloc->prev;
     }
     libc_free(alloc);
   }
-  
+
   return size;
 }
 
 alloc_t* find(void* ptr)
 {
   uint32_t h = hash((uintptr_t)ptr);
-  alloc_t* alloc = alloc_head;
+  alloc_t* alloc = alloc_heads[h];
 
   while (alloc && alloc->addr != (uintptr_t)ptr)
     alloc = alloc->next;
