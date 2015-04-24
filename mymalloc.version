@@ -1,4 +1,4 @@
 {
-  global: malloc; free;
+  global: malloc; free; mmap; munmap;
   local: *;
 };
