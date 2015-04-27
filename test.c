@@ -10,6 +10,8 @@ int main()
 	void* n = malloc(1024);
 	free(m);
 
+	m = __libc_calloc(5,555);
+
 	mm = mmap(0, 10*1024, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
 
 	printf("End 'test'\n");

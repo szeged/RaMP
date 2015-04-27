@@ -1,4 +1,5 @@
 {
-  global: malloc; free; mmap; munmap;
+  global: malloc; free; mmap; munmap; realloc; calloc; valloc; pvalloc; memalign; __libc_malloc; __libc_realloc; __libc_calloc; __libc_valloc; __libc_pvalloc; __libc_memalign;
+
   local: *;
 };
