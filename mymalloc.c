@@ -107,13 +107,19 @@ void* realloc(void* ptr, size_t size)
 
 void* calloc(size_t nmemb, size_t size)
 {
+  void* ptr;
   if (!libc_calloc) {
     libc_calloc = dlsym(RTLD_NEXT, "__libc_calloc");
     printf(LOGPREFIX "Register __libc_calloc: %p\n", libc_calloc);
   }
 
-  printf(LOGPREFIX "calloc\n");
-  return malloc(nmemb * size);
+  ptr = libc_calloc(nmemb, size);
+  mark(ptr, nmemb * size);
+  peak += nmemb * size;
+
+  printf(LOGPREFIX "calloc %p, [%12d]  %zu\n", ptr, peak, nmemb * size);
+
+  return ptr;
 }
 
 void* valloc(size_t size)
