@@ -17,7 +17,7 @@ mymalloc.so: ${OBJS}
 
 .PHONY: clean
 clean:
-	rm -f ${OBJS} ${LIBS}
+	rm -f ${OBJS} ${LIBS} test.o test.out
 
 .PHONY: test
 test: test.out mymalloc.so
@@ -29,3 +29,7 @@ test.out: test.o
 .PHONY: run
 run: mymalloc.so
 	LD_PRELOAD=./mymalloc.so xeyes
+
+.PHONY: firefox
+firefox: mymalloc.so
+	LD_PRELOAD=./mymalloc.so firefox
