@@ -5,6 +5,7 @@
 #include <sys/mman.h>
 
 #define LOGPREFIX "[---] "
+#define REGPREFIX "[+++] "
 #define PRINTLOG 1
 
 extern void calc_peak(size_t);
@@ -19,13 +20,18 @@ extern void* (*libc_calloc)(size_t, size_t);
 extern void* (*libc_valloc)(size_t);
 extern void* (*libc_pvalloc)(size_t);
 extern void* (*libc_memalign)(size_t, size_t);
-extern int (*exit_real)(int);
 
 extern void *(*libmman_mmap)(void*, size_t, int, int, int, off_t);
+extern void* (*libmman_mmap64) (void *, size_t, int, int, int, off64_t);
 extern int (*libmman_munmap)(void*, size_t);
+extern void* (*libmman_mremap) (void *, size_t, size_t, int, void *);
 
-extern void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+extern int (*exit_real)(int);
+
+extern void* mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+extern void* mmap64(void *addr, size_t length, int prot, int flags, int fd, off64_t offset);
 extern int munmap(void *addr, size_t length);
+extern void* mremap(void *addr, size_t old_length, size_t length, int flags, ...);
 
 extern void* malloc(size_t size);
 extern void free(void *ptr);

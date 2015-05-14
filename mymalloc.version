@@ -1,5 +1,5 @@
 {
-  global: malloc; free; mmap; munmap; realloc; calloc; valloc; pvalloc; memalign; posix_memalign; exit; __libc_malloc; __libc_realloc; __libc_calloc; __libc_valloc; __libc_pvalloc; __libc_memalign; __libc_posix_memalign; _exit; _Exit;
+  global: malloc; free; mmap; mmap64; munmap; mremap; realloc; calloc; valloc; pvalloc; memalign; posix_memalign; exit; __libc_malloc; __libc_realloc; __libc_calloc; __libc_valloc; __libc_pvalloc; __libc_memalign; __libc_posix_memalign; _exit; _Exit;
 
   local: *;
 };
